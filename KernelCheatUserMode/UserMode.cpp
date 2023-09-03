@@ -32,46 +32,6 @@ typedef struct _KERNEL_BASE_REQUEST
 	ULONGLONG Address;
 }KERNEL_BASE_REQUEST, * PKERNEL_BASE_REQUEST;
 
-int main()
-{
-	HANDLE handle;
-	DWORD Bytes;
-	handle = CreateFile(L"\\\\.\\kernelCheat", GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
-	if (handle == INVALID_HANDLE_VALUE)
-		return 0;
-	KERNEL_BASE_REQUEST kBase; 
-	
-	int errCode=DeviceIoControl(handle, IOCTL_GET_REQUEST_EVENT, &kBase, sizeof(kBase), &kBase, sizeof(kBase), &Bytes, NULL);
-	if (errCode != 0)
-	{
-		cout << GetLastError() << endl;
-	}
-	printf("pid : %lld address: %x", kBase.pid, kBase.Address);
-
-
-	_KERNEL_READ_REQUEST kRead; 
-	kRead.Size = 0x4; 
-	kRead.Address = 0x0017E0A8+kBase.Address;
-	kRead.Response = 0;
-
-	DeviceIoControl(handle, IOCTL_READ_REQUEST_EVENT, &kRead, sizeof(kRead), &kRead, sizeof(kRead), &Bytes, NULL);  
-
-	ULONG ClientAddress = kRead.Response;
-	
-	KERNEL_WRITE_REQUEST kWrite; 
-	kWrite.Address = ClientAddress + 0xEC;
-	kWrite.Size = 0x4;
-	kWrite.ProcessId =(ULONGLONG) kBase.pid; 
-	kWrite.Value = 1000;
-
-	DeviceIoControl(handle, IOCTL_WRITE_REQUEST_EVENT, &kWrite, sizeof(kWrite), &kWrite, sizeof(kWrite), &Bytes, NULL);
-	
-//	cout <<"value "+kRead.Response << endl;
-
-	return 0;
-}
-=========
-#include "UserMode.h"
 
 bool UserModeController::InitDriver(const wchar_t *wstr)
 {
