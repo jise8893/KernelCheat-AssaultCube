@@ -15,7 +15,7 @@ int main()
 	controller->GetInAddress(0x0017E0A8 ,0x4);
 	
 	controller->WriteValue(0xEC, 1000, 0x4);
-
+	delete controller;
 
 
 	return 0;
