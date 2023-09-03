@@ -48,4 +48,5 @@ public:
 	void GetPid();
 	void GetInAddress(ULONGLONG address, SIZE_T size);
 	void WriteValue(ULONGLONG offset, ULONGLONG value,ULONGLONG size);
+	~UserModeController();
 };
