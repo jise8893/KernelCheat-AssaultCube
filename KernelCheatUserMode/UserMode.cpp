@@ -10,12 +10,13 @@ bool UserModeController::InitDriver(const wchar_t *wstr)
 
 void UserModeController::GetPid()
 {
-	DWORD Bytes; 
+	HANDLE handle;
+	DWORD Bytes;
 	int errCode = DeviceIoControl(handle, IOCTL_GET_REQUEST_EVENT, &kBase, sizeof(kBase), &kBase, sizeof(kBase), &Bytes, NULL); 
-	if (errCode != 0) 
+	if (errCode != 0)
 	{
 		cout << GetLastError() << endl;
-	} 
+	}
 	printf("pid : %lld address: %x\n", kBase.pid, kBase.Address); 
 }
 
@@ -24,12 +25,12 @@ void UserModeController::GetInAddress(ULONGLONG address,SIZE_T size)
 	DWORD Bytes; 
 	kRead.Size = size;
 	kRead.Address = address + kBase.Address; 
-	kRead.Response = 0; 
-	 
-	DeviceIoControl(handle, IOCTL_READ_REQUEST_EVENT, &kRead, sizeof(kRead), &kRead, sizeof(kRead), &Bytes, NULL); 
+	kRead.Response = 0;
+
+	DeviceIoControl(handle, IOCTL_READ_REQUEST_EVENT, &kRead, sizeof(kRead), &kRead, sizeof(kRead), &Bytes, NULL);  
 	ClientAddress = kRead.Response; 
 }
-
+	
 void UserModeController::WriteValue(ULONGLONG offset, ULONGLONG value,ULONGLONG size)
 {
 	DWORD Bytes;
@@ -39,4 +40,8 @@ void UserModeController::WriteValue(ULONGLONG offset, ULONGLONG value,ULONGLONG 
 	kWrite.Value = value;
 
 	DeviceIoControl(handle, IOCTL_WRITE_REQUEST_EVENT, &kWrite, sizeof(kWrite), &kWrite, sizeof(kWrite), &Bytes, NULL);
+	
+//	cout <<"value "+kRead.Response << endl;
+
+	return 0;
 }
